@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Pessoas - Home</title>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!--Let browser know website is optimized for mobile-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+	<nav class="light-blue lighten-1" role="navigation">
+		<div class="nav-wrapper container">
+			<a id="logo-container" href="#" class="brand-logo">JDT - Spring
+				Boot</a>
+			<ul class="right hide-on-med-and-down">
+				<li><span sec:authentication="name">Bob</span> <!-- Roles:  <span
+				sec:authentication="principal.authorities">[ROLE_ ROLE_ADMIN]</span> --></li>
+				<li><a th:href="@{/logout}">Sair</a></li>
+			</ul>
+
+			<ul id="nav-mobile" class="sidenav">
+				<li><a th:href="@{/logout}">Sair</a></li>
+			</ul>
+			<a href="#" data-target="nav-mobile" class="sidenav-trigger"><i
+				class="material-icons">menu</i></a>
+		</div>
+	</nav>
+
+	<h1 class="header center orange-text">Pessoas</h1>
+	<h5 class="header center col s12 light">Gerenciamento de pessoas.</h5>
+
+	<br>
+
+
+	<div class="container">
+		<div class="section">
+
+			<div class="row">
+				<!-- <form class="col s6" th:action="@{/pessoas/buscaPorNome}">
+					<div class="row">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">search</i> <input
+								th:name="buscaNome" id="buscaPorNome" type="text"
+								class="validate" placeholder="Aperte 'ENTER' para buscar">
+							<label for="buscaPorNome">Busca Por Nome Ou Sobrenome</label>
+						</div>
+					</div>
+				</form> -->
+				<form id="busca-pessoas" class="col s12"
+					th:action="@{/pessoas/busca}" th:method="post">
+					<div class="row">
+						<div class="input-field col s6">
+							<i class="material-icons prefix">search</i> <input
+								th:name="buscaGeral" id="buscaGeral" type="text"
+								class="validate" placeholder="Aperte 'ENTER' para buscar">
+							<label for="buscaGeral">Busca Geral</label>
+						</div>
+						<div class="input-field col s3">
+							<button class="waves-effect waves-light btn-small orange"
+								type="submit" name="action"
+								onclick="document.getElementById('busca-pessoas').method='post'">Buscar</button>
+							<button class="waves-effect waves-light btn-small orange"
+								type="submit" name="action"
+								onclick="document.getElementById('busca-pessoas').method='get'">PDF</button>
+						</div>
+					</div>
+					<div class="row"></div>
+				</form>
+			</div>
+
+			<table class="striped highlight centered responsive-table">
+				<thead>
+					<tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th><div sec:authorize="hasRole('ADMIN')">
+								<a class="waves-effect waves-light btn-small orange"
+									href="/jdt-spring-boot/pessoas/cadastro">Cadastrar</a>
+							</div></th>
+					</tr>
+					<tr>
+						<th>#</th>
+						<th>Nome</th>
+						<th>Sobrenome</th>
+						<th>Sexo</th>
+						<th>Profissão</th>
+						<th>Ações</th>
+					</tr>
+				</thead>
+
+				<tbody>
+
+					<tr th:each="p : ${pessoas}">
+						<td th:text="${p.id}">Text</td>
+						<td><a
+							th:href="@{/pessoas/detalhes/{idPessoa}(idPessoa=${p.id})}"><span
+								th:text="${p.nome}">Text</span></a></td>
+						<td th:text="${p.sobrenome}">Text</td>
+						<td th:text="${p.sexo.description}">Text</td>
+						<td th:text="${p.profissao.nomeProfissao}">Text</td>
+						<td><a sec:authorize="hasRole('ADMIN')"
+							th:href="@{/pessoas/editar/{idPessoa}(idPessoa=${p.id})}"><i
+								class="material-icons">edit</i></a> <a
+							sec:authorize="hasRole('ADMIN')"
+							th:href="@{/pessoas/remover/{idPessoa}(idPessoa=${p.id})}"><i
+								class="material-icons">remove_circle</i></a></td>
+					</tr>
+
+				</tbody>
+			</table>
+
+		</div>
+		<br> <br>
+	</div>
+
+	<footer class="page-footer orange">
+		<div class="container">
+			<div class="row">
+				<div class="col l6 s12">
+					<h5 class="white-text">Feedev</h5>
+					<p class="grey-text text-lighten-4">Uma pessoa desenvolvedora.
+					</p>
+
+
+				</div>
+				<!-- <div class="col l3 s12">
+          <h5 class="white-text">sdsdsd</h5>
+          <ul>
+            <li><a class="white-text" href="#!">Link 1</a></li>
+            <li><a class="white-text" href="#!">Link 2</a></li>
+            <li><a class="white-text" href="#!">Link 3</a></li>
+            <li><a class="white-text" href="#!">Link 4</a></li>
+          </ul>
+        </div> -->
+				<div class="col l3 s12">
+					<h5 class="white-text">About Me</h5>
+					<ul>
+						<li><a class="white-text" href="https://feebsilvaa.github.io"
+							target="_blank">Profile</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer-copyright">
+			<div class="container">
+				Made by <a class="orange-text text-lighten-3"
+					href="https://about.me/fernando-silva" target="_blank">Feedev</a>
+			</div>
+		</div>
+	</footer>
+
+
+	<!-- Compiled and minified JavaScript -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+</body>
+</html>
