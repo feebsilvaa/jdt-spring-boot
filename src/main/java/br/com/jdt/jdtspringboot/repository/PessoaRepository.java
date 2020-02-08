@@ -22,5 +22,10 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
 			+ "or (p.sobrenome like %:query%) "
 			+ "or (p.sexo like %:query%) ")
 	List<Pessoa> buscaPorQualquerParametro(String query);
+	
+	@Query(""
+			+ "from Pessoa p "
+			+ "order by p.id desc")
+	List<Pessoa> listarOrdenadoPorId();
 
 }

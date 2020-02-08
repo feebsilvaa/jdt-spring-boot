@@ -4,27 +4,36 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import br.com.jdt.jdtspringboot.model.entity.Pessoa;
 import br.com.jdt.jdtspringboot.repository.PessoaRepository;
+import br.com.jdt.jdtspringboot.repository.TelefoneRepository;
 
 @Service
 public class PessoaService {
-	
+
+	@Value("${spring.profiles.active}")
+	String profile;
+
 	private PessoaRepository pessoaRepository;
-	
+	private TelefoneRepository telefoneRepository;
+
 	@Autowired
-	public PessoaService(PessoaRepository pessoaRepository) {
+	public PessoaService(PessoaRepository pessoaRepository, TelefoneRepository telefoneRepository) {
 		this.pessoaRepository = pessoaRepository;
+		this.telefoneRepository = telefoneRepository;
 	}
 
 	public Pessoa salvar(Pessoa pessoa) {
+		if ("prod".equalsIgnoreCase(profile))
+			this.removerUmaPessoa();
 		return this.pessoaRepository.save(pessoa);
 	}
 
 	public List<Pessoa> listar() {
-		return this.pessoaRepository.findAll();
+		return this.pessoaRepository.listarOrdenadoPorId();
 	}
 
 	public Optional<Pessoa> buscarPorId(Long id) {
@@ -47,5 +56,11 @@ public class PessoaService {
 	public List<Pessoa> buscaPorQualquerParametro(String query) {
 		return this.pessoaRepository.buscaPorQualquerParametro(query);
 	}
-	
+
+	private void removerUmaPessoa() {
+		List<Pessoa> pessoas = this.listar();
+		pessoas.get(0).getTelefones().forEach(telefone -> this.telefoneRepository.deleteById(telefone.getId()));
+		this.remover(pessoas.get(0).getId());
+	}
+
 }
