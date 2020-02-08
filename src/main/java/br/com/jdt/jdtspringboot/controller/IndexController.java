@@ -2,6 +2,7 @@ package br.com.jdt.jdtspringboot.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class IndexController {
@@ -12,8 +13,8 @@ public class IndexController {
 	}
 
 	@GetMapping("/login")
-	public String loginForm() {
-		return "login";
+	public ModelAndView loginForm() {
+		return new ModelAndView("login");
 	}
 	
 }
