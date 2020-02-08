@@ -60,13 +60,17 @@
 						<div class="input-field col s6">
 							<i class="material-icons prefix">search</i> <input
 								th:name="buscaGeral" id="buscaGeral" type="text"
-								class="validate" placeholder="Aperte 'ENTER' para buscar">
+								class="validate" placeholder="Aperte 'ENTER' para buscar"
+								th:value="${formQuery != null} ? ${formQuery} : ''">
 							<label for="buscaGeral">Busca Geral</label>
 						</div>
 						<div class="input-field col s3">
 							<button class="waves-effect waves-light btn-small orange"
 								type="submit" name="action"
 								onclick="document.getElementById('busca-pessoas').method='post'">Buscar</button>
+							<a class="waves-effect waves-light btn-small orange"
+								type="submit" name="action"
+								th:href="@{/pessoas/busca/todos}">Todos</a>
 							<button class="waves-effect waves-light btn-small orange"
 								type="submit" name="action"
 								onclick="document.getElementById('busca-pessoas').method='get'">PDF</button>

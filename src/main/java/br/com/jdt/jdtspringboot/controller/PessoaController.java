@@ -129,7 +129,7 @@ public class PessoaController {
 	
 	@GetMapping("/buscaPorNome")
 	public ModelAndView buscaPorNome(@RequestParam("buscaNome") String nome) {
-		ModelAndView mav = new ModelAndView("/pessoas/home");
+		ModelAndView mav = new ModelAndView("pessoas/home");
 		List<Pessoa> pessoasPorNome = this.pessoaService.buscaPorNome(nome);
 		mav.addObject("pessoas", pessoasPorNome);
 		return mav;
@@ -137,10 +137,21 @@ public class PessoaController {
 	
 	@PostMapping("/busca")
 	public ModelAndView busca(@RequestParam("buscaGeral") String query) {
-		ModelAndView mav = new ModelAndView("/pessoas/home");
 		List<Pessoa> pessoasPorNome = this.pessoaService.buscaPorQualquerParametro(query);
-		mav.addObject("pessoas", pessoasPorNome);
-		return mav;
+		Map<String, Object> params = Stream.of(new Object[][] {
+			{ "formQuery", query },
+			{ "pessoas", pessoasPorNome }
+		}).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+		return this.setupViewHome(params);
+	}
+	
+	@GetMapping("/busca/todos")
+	public ModelAndView buscaTodos() {
+		List<Pessoa> pessoas = this.pessoaService.listar();
+		Map<String, Object> params = Stream.of(new Object[][] {
+			{ "pessoas", pessoas}
+		}).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));
+		return this.setupViewHome(params);
 	}
 	
 	@GetMapping("/busca")
@@ -167,6 +178,18 @@ public class PessoaController {
 		mav.addObject("pessoa", pessoa);
 		List<Telefone> telefones = this.telefoneService.listarPorPessoa(id);
 		mav.addObject("telefones", telefones);
+		return mav;
+	}
+
+	/**
+	 * Método que seta os objetos padrão da view de home e recebe parametros não obrigatorios
+	 * @param params
+	 * @return
+	 */
+	private ModelAndView setupViewHome(Map<String, Object> params) {
+		ModelAndView mav = new ModelAndView("pessoas/home");
+		if (params != null)
+			mav.addAllObjects(params);
 		return mav;
 	}
 
